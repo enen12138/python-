@@ -20,6 +20,11 @@ code_list = []
 # 遍历情况
 for index, row in stock_info_filtered.iterrows():
     code = row['code']
+
+    # 排除以688开头的股票
+    if code.startswith('688'):
+        continue  # 跳过以688开头的股票
+
     rs = bs.query_history_k_data_plus(code, "code,close,open", start_date=s_date, end_date=e_date, frequency="d",
                                       adjustflag="3")
     df = rs.get_data()
@@ -48,6 +53,7 @@ for index, row in stock_info_filtered.iterrows():
 
             # 判断是否突破中轨
             if day_low < last_day_data['ma'] < day_high:
+                if code
                 code_list.append(code)
         else:
             print(f"无法获取 {code} 在 {e_date} 的详细数据")
