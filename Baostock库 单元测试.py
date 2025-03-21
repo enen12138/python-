@@ -11,7 +11,7 @@ s_date = (pd.to_datetime('today') - pd.Timedelta(days=28)).strftime('%Y-%m-%d')
 # 获取市场符合条件股票的名称代码
 stock_info = bs.query_stock_basic().get_data()
 stock_info_filtered = stock_info[(stock_info['type'] == '1') & (stock_info['status'] == '1')]
-print(stock_info_filtered)
+
 
 # 初始化一个列表用于存储结果
 result_list = []
@@ -61,7 +61,8 @@ for code in code_list:
 
     if not ds.empty:
         ds['isST'] = ds['isST'].astype(str)  # 确保isST是字符串类型
-        if ds['isST'].values[0] != '1':
+        ds['turn'] = ds['turn'].astype(str)
+        if ds['isST'].values[0] != '1' and ds['turn'].values[0] > '0.1':
             result_list.append({
                 'code': ds['code'].values[0],
                 'volume': float(ds['volume'].values[0]),
