@@ -35,7 +35,7 @@ for index, row in stock_info_filtered.iterrows():
         df['open'] = df['open'].astype(float)
 
         # 计算20日简单移动平均线（SMA）作为布林线中轨
-        df['ma'] = df['close'].rolling(window=20).mean()
+        df['ma'] = df['close'].rolling(window=20).mean().round(2)
         df['std'] = df['close'].rolling(window=20).std()
         df['upper_band'] = df['ma'] + 2 * df['std']
         df['lower_band'] = df['ma'] - 2 * df['std']
@@ -50,10 +50,11 @@ for index, row in stock_info_filtered.iterrows():
         if not day_date.empty:
             day_low = float(day_date['low'].values[0])
             day_high = float(day_date['high'].values[0])
+            day_open = float(day_date['open'].values[0])
+            day_close = float(day_date['close'].values[0])
 
             # 判断是否突破中轨
-            if day_low < last_day_data['ma'] < day_high:
-                if code
+            if day_low < last_day_data['ma'] < day_high and day_open < last_day_data['ma'] < day_close:
                 code_list.append(code)
         else:
             print(f"无法获取 {code} 在 {e_date} 的详细数据")
@@ -84,7 +85,9 @@ bs.logout()
 # 将结果转换为DataFrame并保存为csv文件
 if result_list:
     result_df = pd.DataFrame(result_list)
-    result_df.to_csv('bollinger_breakout_baostock.csv', index=False)
+    formatted_date = e_date.replace('-', '')
+    filename = 'stock_' + formatted_date + '.csv'
+    result_df.to_csv(filename, index=False)
     print("数据已成功保存到'bollinger_breakout_baostock.csv'")
 else:
     print("没有符合条件的数据")
